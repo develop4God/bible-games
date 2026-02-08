@@ -43,8 +43,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/app/build/
+/android/build/
+/android/.gradle/
 
 # Ignore generated launcher icons
 android/app/src/main/res/mipmap-*/ic_launcher.png
 ios/Runner/Assets.xcassets/AppIcon.appiconset/*
 !ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json
+
+# Keystore and signing properties
+android/key.properties
+android/app/upload-keystore.jks
+android/app/*.jks
+android/app/*.keystore
