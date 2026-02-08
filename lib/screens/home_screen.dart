@@ -36,7 +36,7 @@ class HomeScreen extends ConsumerWidget {
       const GameCard(
         title: 'Trivia Bíblica',
         subtitle: 'Preguntas y Respuestas',
-        icon: Icons.menu_book,
+        icon: Icons.auto_stories,
         gradientColors: [Color(0xFF667eea), Color(0xFF764ba2)],
         screen: TriviaScreen(),
         emoji: '📖',
