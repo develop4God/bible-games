@@ -38,3 +38,8 @@ app.*.map.json
 android/app/src/main/res/mipmap-*/ic_launcher.png
 ios/Runner/Assets.xcassets/AppIcon.appiconset/*
 !ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json
+
+# Android signing files
+android/key.properties
+android/app/upload-keystore.jks
+*.jks
