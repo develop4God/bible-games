@@ -29,6 +29,9 @@ jobs:
   analyze:
     name: 📊 Static Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -56,9 +59,9 @@ jobs:
       - name: 🎨 Check and auto-format code
         run: |
           echo "🎨 Checking Dart code formatting..."
-          # Enable auto_format by default on push, or respect workflow_dispatch inputs
+          # Only auto-format on pull_request or workflow_dispatch with auto_format enabled
           AUTO_FORMAT="${{ github.event.inputs.auto_format }}"
-          if [ "${{ github.event_name }}" = "push" ]; then
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
             AUTO_FORMAT="true"
           fi
 
@@ -84,7 +87,7 @@ jobs:
                 git push origin "$BRANCH"
               fi
             else
-              echo "❌ Auto-formatting is disabled. Please format manually:"
+              echo "❌ Auto-formatting is disabled or event is 'push'. Please format manually:"
               dart format --show-all .
               exit 1
             fi
@@ -96,21 +99,27 @@ jobs:
         run: |
           echo "🧹 Eliminando imports no usados y aplicando fixes automáticos..."
           dart fix --apply
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action [bot]"
+          
+          # Only commit and push on pull_request or workflow_dispatch
+          if [ "${{ github.event_name }}" = "pull_request" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action [bot]"
 
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BRANCH="${{ github.head_ref }}"
-          elif [ -n "${{ github.event.inputs.target_branch }}" ]; then
-            BRANCH="${{ github.event.inputs.target_branch }}"
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              BRANCH="${{ github.head_ref }}"
+            elif [ -n "${{ github.event.inputs.target_branch }}" ]; then
+              BRANCH="${{ github.event.inputs.target_branch }}"
+            else
+              BRANCH="${{ github.ref_name }}"
+            fi
+
+            if ! git diff --quiet; then
+              git add .
+              git commit -m "🧹 Remove unused imports and auto-fix code [skip ci]"
+              git push origin "$BRANCH"
+            fi
           else
-            BRANCH="${{ github.ref_name }}"
-          fi
-
-          if ! git diff --quiet; then
-            git add .
-            git commit -m "🧹 Remove unused imports and auto-fix code [skip ci]"
-            git push origin "$BRANCH"
+            echo "ℹ️ Skipping auto-commit on push event to main/develop branches"
           fi
 
       - name: 🔍 Analyze code
@@ -125,6 +134,9 @@ jobs:
   test:
     name: 🧪 Testing
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -183,6 +195,7 @@ jobs:
           path: coverage/
 
       - name: Commit and push README update
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action [bot]"
