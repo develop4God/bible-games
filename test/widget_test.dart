@@ -15,7 +15,8 @@ import 'package:bible_games/providers/high_scores_provider.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Home screen loads and shows main title', (WidgetTester tester) async {
+  testWidgets('Home screen loads and shows main title',
+      (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
 
