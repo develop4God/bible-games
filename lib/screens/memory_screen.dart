@@ -147,7 +147,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                 ref.read(memoryGameProvider.notifier).flipCard(card.id);
 
                 // Check for match after a short delay
-                Future<void>.delayed(const Duration(milliseconds: 100), () {
+                Future.delayed(const Duration(milliseconds: 100), () {
                   final newState = ref.read(memoryGameProvider);
                   if (newState.flippedCards.length == 2) {
                     ref
@@ -155,8 +155,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                         .checkMatch(memoryCards);
 
                     // Reset flipped cards if no match
-                    Future<void>.delayed(const Duration(milliseconds: 1000),
-                        () {
+                    Future.delayed(const Duration(milliseconds: 1000), () {
                       final currentState = ref.read(memoryGameProvider);
                       if (currentState.flippedCards.length == 2) {
                         ref.read(memoryGameProvider.notifier).resetFlipped();
