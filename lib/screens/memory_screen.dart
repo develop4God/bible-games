@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,21 +17,62 @@ class MemoryScreen extends ConsumerStatefulWidget {
 }
 
 class _MemoryScreenState extends ConsumerState<MemoryScreen> {
+  late List<MemoryCard> _shuffledCards;
+  bool _isProcessing = false;
+
   @override
   void initState() {
     super.initState();
+    _shuffledCards = memoryCards.toList()..shuffle();
     // Reset game when screen loads
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(memoryGameProvider.notifier).resetGame();
     });
   }
 
+  void _handleCardTap(MemoryCard card) {
+    if (_isProcessing) return;
+
+    final gameState = ref.read(memoryGameProvider);
+    
+    // Ignore if already matched or already flipped
+    if (gameState.matchedPairs.contains(card.id) || 
+        gameState.flippedCards.contains(card.id)) {
+      return;
+    }
+
+    ref.read(memoryGameProvider.notifier).flipCard(card.id);
+
+    final newState = ref.read(memoryGameProvider);
+    if (newState.flippedCards.length == 2) {
+      _isProcessing = true;
+      
+      // Check for match after flip animation roughly finishes
+      Future.delayed(const Duration(milliseconds: 500), () {
+        final card1 = _shuffledCards.firstWhere((c) => c.id == newState.flippedCards[0]);
+        final card2 = _shuffledCards.firstWhere((c) => c.id == newState.flippedCards[1]);
+        
+        final isMatch = card1.pairId == card2.pairId;
+        
+        if (isMatch) {
+          ref.read(memoryGameProvider.notifier).checkMatch(_shuffledCards);
+          _isProcessing = false;
+        } else {
+          // Keep cards visible for a second before flipping back
+          Future.delayed(const Duration(milliseconds: 1000), () {
+            ref.read(memoryGameProvider.notifier).checkMatch(_shuffledCards); // Increment moves
+            ref.read(memoryGameProvider.notifier).resetFlipped();
+            _isProcessing = false;
+          });
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(memoryGameProvider);
-    final cards = memoryCards.toList()..shuffle();
-
-    final isGameComplete = gameState.matchedPairs.length == cards.length;
+    final isGameComplete = gameState.matchedPairs.length == _shuffledCards.length;
 
     if (isGameComplete) {
       return _buildResultScreen(context, ref, gameState.moves);
@@ -78,7 +120,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Colors.white.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
@@ -106,95 +148,36 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                   padding: const EdgeInsets.all(20),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                    childAspectRatio: 1,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.8,
                   ),
-                  itemCount: cards.length,
+                  itemCount: _shuffledCards.length,
                   itemBuilder: (context, index) {
-                    final card = cards[index];
+                    final card = _shuffledCards[index];
                     final isFlipped = gameState.flippedCards.contains(card.id);
                     final isMatched = gameState.matchedPairs.contains(card.id);
+                    
+                    // Determine if we should show red (wrong match)
+                    bool isWrong = false;
+                    if (gameState.flippedCards.length == 2 && isFlipped) {
+                        final c1 = _shuffledCards.firstWhere((c) => c.id == gameState.flippedCards[0]);
+                        final c2 = _shuffledCards.firstWhere((c) => c.id == gameState.flippedCards[1]);
+                        isWrong = c1.pairId != c2.pairId;
+                    }
 
-                    return _buildMemoryCard(
-                      context,
-                      card,
-                      isFlipped || isMatched,
-                      isMatched,
+                    return MemoryCardWidget(
+                      card: card,
+                      isFlipped: isFlipped || isMatched,
+                      isMatched: isMatched,
+                      isWrong: isWrong,
+                      onTap: () => _handleCardTap(card),
                     );
                   },
                 ),
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMemoryCard(
-    BuildContext context,
-    MemoryCard card,
-    bool isFlipped,
-    bool isMatched,
-  ) {
-    return GestureDetector(
-      onTap: isMatched
-          ? null
-          : () {
-              final gameState = ref.read(memoryGameProvider);
-              if (gameState.flippedCards.length < 2) {
-                ref.read(memoryGameProvider.notifier).flipCard(card.id);
-
-                // Check for match after a short delay
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  final newState = ref.read(memoryGameProvider);
-                  if (newState.flippedCards.length == 2) {
-                    ref
-                        .read(memoryGameProvider.notifier)
-                        .checkMatch(memoryCards);
-
-                    // Reset flipped cards if no match
-                    Future.delayed(const Duration(milliseconds: 1000), () {
-                      final currentState = ref.read(memoryGameProvider);
-                      if (currentState.flippedCards.length == 2) {
-                        ref.read(memoryGameProvider.notifier).resetFlipped();
-                      }
-                    });
-                  }
-                });
-              }
-            },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        decoration: BoxDecoration(
-          color: isMatched
-              ? Colors.green.withValues(alpha: 0.5)
-              : (isFlipped
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.3)),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.white.withValues(alpha: 0.5),
-            width: 2,
-          ),
-        ),
-        child: Center(
-          child: isFlipped || isMatched
-              ? Text(
-                  card.text,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                  textAlign: TextAlign.center,
-                )
-              : const Icon(
-                  Icons.help_outline,
-                  color: Colors.white,
-                  size: 40,
-                ),
         ),
       ),
     );
@@ -243,7 +226,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.2),
+                      color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -281,6 +264,9 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
+                            setState(() {
+                                _shuffledCards.shuffle();
+                            });
                             ref.read(memoryGameProvider.notifier).resetGame();
                           },
                           style: ElevatedButton.styleFrom(
@@ -303,7 +289,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(16),
                             backgroundColor:
-                                Colors.white.withValues(alpha: 0.3),
+                                Colors.white.withOpacity(0.3),
                             foregroundColor: Colors.white,
                           ),
                           child: const Text(
@@ -319,6 +305,99 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MemoryCardWidget extends StatelessWidget {
+  final MemoryCard card;
+  final bool isFlipped;
+  final bool isMatched;
+  final bool isWrong;
+  final VoidCallback onTap;
+
+  const MemoryCardWidget({
+    super.key,
+    required this.card,
+    required this.isFlipped,
+    required this.isMatched,
+    required this.isWrong,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: TweenAnimationBuilder(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+        tween: Tween<double>(begin: 0, end: isFlipped ? 180 : 0),
+        builder: (context, double value, child) {
+          final isBack = value > 90;
+          return Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001)
+              ..rotateY(value * pi / 180),
+            child: isBack
+                ? Transform(
+                    alignment: Alignment.center,
+                    transform: Matrix4.identity()..rotateY(pi),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: isMatched 
+                            ? Colors.green.withOpacity(0.8)
+                            : (isWrong ? Colors.red.withOpacity(0.8) : Colors.white),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            card.text,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: (isMatched || isWrong) ? Colors.white : Colors.black87,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.white.withOpacity(0.4), Colors.white.withOpacity(0.1)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.5),
+                        width: 2,
+                      ),
+                    ),
+                    child: const Center(
+                      child: Icon(
+                        Icons.help_outline,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ),
+                  ),
+          );
+        },
       ),
     );
   }
