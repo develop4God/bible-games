@@ -92,16 +92,26 @@ const List<MemoryCard> memoryCards = [
   // Kids pairs
   MemoryCard(id: 1, text: 'Adán', pairId: 1, difficulty: DifficultyLevel.kids),
   MemoryCard(id: 2, text: 'Eva', pairId: 1, difficulty: DifficultyLevel.kids),
-  MemoryCard(id: 3, text: 'Moisés', pairId: 2, difficulty: DifficultyLevel.kids),
-  MemoryCard(id: 4, text: 'Diez Mandamientos', pairId: 2, difficulty: DifficultyLevel.kids),
+  MemoryCard(
+      id: 3, text: 'Moisés', pairId: 2, difficulty: DifficultyLevel.kids),
+  MemoryCard(
+      id: 4,
+      text: 'Diez Mandamientos',
+      pairId: 2,
+      difficulty: DifficultyLevel.kids),
   MemoryCard(id: 5, text: 'David', pairId: 3, difficulty: DifficultyLevel.kids),
-  MemoryCard(id: 6, text: 'Goliat', pairId: 3, difficulty: DifficultyLevel.kids),
+  MemoryCard(
+      id: 6, text: 'Goliat', pairId: 3, difficulty: DifficultyLevel.kids),
   MemoryCard(id: 7, text: 'Noé', pairId: 4, difficulty: DifficultyLevel.kids),
   MemoryCard(id: 8, text: 'Arca', pairId: 4, difficulty: DifficultyLevel.kids),
   MemoryCard(id: 9, text: 'Jonás', pairId: 5, difficulty: DifficultyLevel.kids),
   MemoryCard(id: 10, text: 'Pez', pairId: 5, difficulty: DifficultyLevel.kids),
   MemoryCard(id: 11, text: 'José', pairId: 6, difficulty: DifficultyLevel.kids),
-  MemoryCard(id: 12, text: 'Túnica de Colores', pairId: 6, difficulty: DifficultyLevel.kids),
+  MemoryCard(
+      id: 12,
+      text: 'Túnica de Colores',
+      pairId: 6,
+      difficulty: DifficultyLevel.kids),
 ];
 
 // Quiz Questions Data

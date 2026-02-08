@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:bible_games/data/biblical_data.dart';
+import 'package:bible_games/models/biblical_content.dart';
 import 'package:bible_games/providers/game_providers.dart';
 import 'package:bible_games/providers/high_scores_provider.dart';
 
@@ -54,8 +54,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(LucideIcons.arrowLeft,
-                          color: Colors.white),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Expanded(
@@ -79,13 +78,13 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(LucideIcons.move, color: Colors.white),
+                    const Icon(Icons.swap_horiz, color: Colors.white),
                     const SizedBox(width: 8),
                     Text(
                       'Movimientos: ${gameState.moves}',
@@ -135,7 +134,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
 
   Widget _buildMemoryCard(
     BuildContext context,
-    dynamic card,
+    MemoryCard card,
     bool isFlipped,
     bool isMatched,
   ) {
@@ -160,9 +159,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                         () {
                       final currentState = ref.read(memoryGameProvider);
                       if (currentState.flippedCards.length == 2) {
-                        ref
-                            .read(memoryGameProvider.notifier)
-                            .resetFlipped();
+                        ref.read(memoryGameProvider.notifier).resetFlipped();
                       }
                     });
                   }
@@ -173,11 +170,13 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
           color: isMatched
-              ? Colors.green.withOpacity(0.5)
-              : (isFlipped ? Colors.white : Colors.white.withOpacity(0.3)),
+              ? Colors.green.withValues(alpha: 0.5)
+              : (isFlipped
+                  ? Colors.white
+                  : Colors.white.withValues(alpha: 0.3)),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: Colors.white.withOpacity(0.5),
+            color: Colors.white.withValues(alpha: 0.5),
             width: 2,
           ),
         ),
@@ -193,7 +192,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                   textAlign: TextAlign.center,
                 )
               : const Icon(
-                  LucideIcons.helpCircle,
+                  Icons.help_outline,
                   color: Colors.white,
                   size: 40,
                 ),
@@ -228,7 +227,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    LucideIcons.trophy,
+                    Icons.emoji_events,
                     size: 100,
                     color: Colors.white,
                   ),
@@ -245,7 +244,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -304,7 +303,8 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(16),
-                            backgroundColor: Colors.white.withOpacity(0.3),
+                            backgroundColor:
+                                Colors.white.withValues(alpha: 0.3),
                             foregroundColor: Colors.white,
                           ),
                           child: const Text(

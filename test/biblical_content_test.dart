@@ -27,7 +27,7 @@ void main() {
       for (final card in memoryCards) {
         pairs.putIfAbsent(card.pairId, () => []).add(card.id);
       }
-      
+
       // Each pair should have exactly 2 cards
       for (final pair in pairs.values) {
         expect(pair.length, 2);
@@ -47,7 +47,7 @@ void main() {
       final puzzle = wordSearchPuzzles.first;
       expect(puzzle.grid.isNotEmpty, true);
       expect(puzzle.words.isNotEmpty, true);
-      
+
       // Grid should be square or rectangular
       final rowLength = puzzle.grid.first.length;
       for (final row in puzzle.grid) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:bible_games/data/biblical_data.dart';
 import 'package:bible_games/providers/high_scores_provider.dart';
@@ -44,8 +43,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(LucideIcons.arrowLeft,
-                          color: Colors.white),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Expanded(
@@ -69,13 +67,13 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(LucideIcons.search, color: Colors.white),
+                    const Icon(Icons.search, color: Colors.white),
                     const SizedBox(width: 8),
                     Text(
                       'Encontradas: ${foundWords.length}/${puzzle.words.length}',
@@ -105,7 +103,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -119,8 +117,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                             crossAxisSpacing: 4,
                             mainAxisSpacing: 4,
                           ),
-                          itemCount:
-                              puzzle.grid.length * puzzle.grid[0].length,
+                          itemCount: puzzle.grid.length * puzzle.grid[0].length,
                           itemBuilder: (context, index) {
                             final row = index ~/ puzzle.grid[0].length;
                             final col = index % puzzle.grid[0].length;
@@ -128,7 +125,8 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
 
                             return Container(
                               decoration: BoxDecoration(
-                                color: const Color(0xFF4facfe).withOpacity(0.1),
+                                color: const Color(0xFF4facfe)
+                                    .withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Center(
@@ -154,7 +152,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(24),
                   ),
@@ -200,7 +198,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                             decoration: BoxDecoration(
                               color: isFound
                                   ? Colors.green
-                                  : Colors.white.withOpacity(0.3),
+                                  : Colors.white.withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
@@ -209,9 +207,8 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
                                 color: Colors.white,
-                                decoration: isFound
-                                    ? TextDecoration.lineThrough
-                                    : null,
+                                decoration:
+                                    isFound ? TextDecoration.lineThrough : null,
                               ),
                             ),
                           ),
@@ -252,7 +249,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    LucideIcons.trophy,
+                    Icons.emoji_events,
                     size: 100,
                     color: Colors.white,
                   ),
@@ -270,7 +267,7 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -332,7 +329,8 @@ class _WordSearchScreenState extends ConsumerState<WordSearchScreen> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(16),
-                            backgroundColor: Colors.white.withOpacity(0.3),
+                            backgroundColor:
+                                Colors.white.withValues(alpha: 0.3),
                             foregroundColor: Colors.white,
                           ),
                           child: const Text(

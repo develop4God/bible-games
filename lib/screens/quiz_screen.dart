@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:bible_games/providers/game_providers.dart';
 import 'package:bible_games/providers/high_scores_provider.dart';
@@ -50,8 +49,7 @@ class QuizScreen extends ConsumerWidget {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(LucideIcons.arrowLeft,
-                          color: Colors.white),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
                       onPressed: () => Navigator.pop(context),
                     ),
                     const Expanded(
@@ -84,9 +82,9 @@ class QuizScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 8),
                     LinearProgressIndicator(
-                      value:
-                          (gameState.currentQuestionIndex + 1) / questions.length,
-                      backgroundColor: Colors.white.withOpacity(0.3),
+                      value: (gameState.currentQuestionIndex + 1) /
+                          questions.length,
+                      backgroundColor: Colors.white.withValues(alpha: 0.3),
                       valueColor:
                           const AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
@@ -101,13 +99,13 @@ class QuizScreen extends ConsumerWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(LucideIcons.zap, color: Colors.white),
+                    const Icon(Icons.flash_on, color: Colors.white),
                     const SizedBox(width: 8),
                     Text(
                       'Puntos: ${gameState.score}',
@@ -139,7 +137,7 @@ class QuizScreen extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(20),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 10,
                                 offset: const Offset(0, 4),
                               ),
@@ -172,7 +170,7 @@ class QuizScreen extends ConsumerWidget {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                 ),
-                                icon: const Icon(LucideIcons.check, size: 32),
+                                icon: const Icon(Icons.check, size: 32),
                                 label: const Text(
                                   'Verdadero',
                                   style: TextStyle(
@@ -195,7 +193,7 @@ class QuizScreen extends ConsumerWidget {
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                 ),
-                                icon: const Icon(LucideIcons.x, size: 32),
+                                icon: const Icon(Icons.close, size: 32),
                                 label: const Text(
                                   'Falso',
                                   style: TextStyle(
@@ -219,8 +217,8 @@ class QuizScreen extends ConsumerWidget {
     );
   }
 
-  void _answerQuestion(
-      BuildContext context, WidgetRef ref, bool userAnswer, bool correctAnswer) {
+  void _answerQuestion(BuildContext context, WidgetRef ref, bool userAnswer,
+      bool correctAnswer) {
     final isCorrect = userAnswer == correctAnswer;
     ref.read(quizGameProvider.notifier).answerQuestion(isCorrect);
 
@@ -257,7 +255,7 @@ class QuizScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
-                    LucideIcons.trophy,
+                    Icons.emoji_events,
                     size: 100,
                     color: Colors.white,
                   ),
@@ -274,7 +272,7 @@ class QuizScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -333,7 +331,8 @@ class QuizScreen extends ConsumerWidget {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.all(16),
-                            backgroundColor: Colors.white.withOpacity(0.3),
+                            backgroundColor:
+                                Colors.white.withValues(alpha: 0.3),
                             foregroundColor: Colors.white,
                           ),
                           child: const Text(

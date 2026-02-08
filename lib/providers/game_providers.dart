@@ -57,9 +57,7 @@ final triviaGameProvider =
 final filteredTriviaQuestionsProvider =
     Provider.autoDispose<List<TriviaQuestion>>((ref) {
   final difficulty = ref.watch(gameDifficultyProvider);
-  return triviaQuestions
-      .where((q) => q.difficulty == difficulty)
-      .toList()
+  return triviaQuestions.where((q) => q.difficulty == difficulty).toList()
     ..shuffle();
 });
 

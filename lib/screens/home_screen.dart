@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 
 import 'package:bible_games/providers/high_scores_provider.dart';
 import 'package:bible_games/screens/trivia_screen.dart';
@@ -34,36 +33,36 @@ class HomeScreen extends ConsumerWidget {
     final highScores = ref.watch(highScoresProvider);
 
     final gameCards = [
-      GameCard(
+      const GameCard(
         title: 'Trivia Bíblica',
         subtitle: 'Preguntas y Respuestas',
-        icon: LucideIcons.bookOpen,
-        gradientColors: const [Color(0xFF667eea), Color(0xFF764ba2)],
-        screen: const TriviaScreen(),
+        icon: Icons.menu_book,
+        gradientColors: [Color(0xFF667eea), Color(0xFF764ba2)],
+        screen: TriviaScreen(),
         emoji: '📖',
       ),
-      GameCard(
+      const GameCard(
         title: 'Memorama',
         subtitle: 'Encuentra las Parejas',
-        icon: LucideIcons.brain,
-        gradientColors: const [Color(0xFFf093fb), Color(0xFFf5576c)],
-        screen: const MemoryScreen(),
+        icon: Icons.psychology,
+        gradientColors: [Color(0xFFf093fb), Color(0xFFf5576c)],
+        screen: MemoryScreen(),
         emoji: '🧠',
       ),
-      GameCard(
+      const GameCard(
         title: 'Sopa de Letras',
         subtitle: 'Encuentra las Palabras',
-        icon: LucideIcons.grid3x3,
-        gradientColors: const [Color(0xFF4facfe), Color(0xFF00f2fe)],
-        screen: const WordSearchScreen(),
+        icon: Icons.grid_3x3,
+        gradientColors: [Color(0xFF4facfe), Color(0xFF00f2fe)],
+        screen: WordSearchScreen(),
         emoji: '🔤',
       ),
-      GameCard(
+      const GameCard(
         title: 'Quiz Rápido',
         subtitle: 'Verdadero o Falso',
-        icon: LucideIcons.zap,
-        gradientColors: const [Color(0xFF43e97b), Color(0xFF38f9d7)],
-        screen: const QuizScreen(),
+        icon: Icons.flash_on,
+        gradientColors: [Color(0xFF43e97b), Color(0xFF38f9d7)],
+        screen: QuizScreen(),
         emoji: '⚡',
       ),
     ];
@@ -99,7 +98,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           SizedBox(width: 8),
                           Icon(
-                            LucideIcons.sparkles,
+                            Icons.auto_awesome,
                             color: Colors.white,
                             size: 32,
                           ),
@@ -120,7 +119,7 @@ class HomeScreen extends ConsumerWidget {
                         'Aprende y diviértete con la Palabra de Dios',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -134,12 +133,12 @@ class HomeScreen extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Card(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                       side: BorderSide(
-                        color: Colors.white.withOpacity(0.3),
+                        color: Colors.white.withValues(alpha: 0.3),
                         width: 2,
                       ),
                     ),
@@ -150,7 +149,7 @@ class HomeScreen extends ConsumerWidget {
                           const Row(
                             children: [
                               Icon(
-                                LucideIcons.trophy,
+                                Icons.emoji_events,
                                 color: Colors.white,
                                 size: 24,
                               ),
@@ -215,7 +214,7 @@ class HomeScreen extends ConsumerWidget {
                         '"Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él"',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -224,7 +223,7 @@ class HomeScreen extends ConsumerWidget {
                         'Proverbios 22:6',
                         style: TextStyle(
                           fontSize: 10,
-                          color: Colors.white.withOpacity(0.4),
+                          color: Colors.white.withValues(alpha: 0.4),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -254,7 +253,7 @@ class HomeScreen extends ConsumerWidget {
           label,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.white.withOpacity(0.7),
+            color: Colors.white.withValues(alpha: 0.7),
           ),
         ),
       ],
@@ -279,7 +278,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           borderRadius: BorderRadius.circular(24),
           border: Border.all(
-            color: Colors.white.withOpacity(0.3),
+            color: Colors.white.withValues(alpha: 0.3),
             width: 2,
           ),
         ),
@@ -308,7 +307,7 @@ class HomeScreen extends ConsumerWidget {
                     game.subtitle,
                     style: TextStyle(
                       fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Colors.white.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -317,7 +316,7 @@ class HomeScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
