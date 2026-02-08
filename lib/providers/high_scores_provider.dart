@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,17 +14,36 @@ class HighScoresNotifier extends StateNotifier<HighScores> {
 
   final SharedPreferences _prefs;
 
+  /// MIGRATION STRATEGY:
+  /// - V1: JSON with keys: trivia, memory, wordSearch, quiz
+  /// - If schema changes: Add version field, migrate or reset
+  /// - Current: Parse errors reset to HighScores() (intentional)
+  /// - Future: Consider versioned keys like 'high_scores_v2'
   Future<void> _loadScores() async {
-    final scoresJson = _prefs.getString('highScores');
-    if (scoresJson != null) {
-      final Map<String, dynamic> decoded =
-          jsonDecode(scoresJson) as Map<String, dynamic>;
-      state = HighScores.fromJson(decoded);
+    try {
+      final scoresJson = _prefs.getString('highScores');
+      if (scoresJson != null) {
+        final Map<String, dynamic> decoded =
+            jsonDecode(scoresJson) as Map<String, dynamic>;
+        state = HighScores.fromJson(decoded);
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Failed to load high scores: $e');
+      debugPrint(stackTrace.toString());
+      // Safe fallback - don't crash the app
+      // Intentional: Corrupted/outdated data resets scores
+      // Alternative: Implement migration logic here
+      state = const HighScores();
     }
   }
 
   Future<void> _saveScores() async {
-    await _prefs.setString('highScores', jsonEncode(state.toJson()));
+    try {
+      await _prefs.setString('highScores', jsonEncode(state.toJson()));
+    } catch (e) {
+      debugPrint('Failed to save high scores: $e');
+      // Consider: Show user-facing error snackbar in future
+    }
   }
 
   Future<void> updateTriviaScore(int score) async {
